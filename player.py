@@ -78,7 +78,6 @@ class Player:
                 self.lean_direction *= -1  # Reverse direction
                 self.lean_speed = max(self.lean_speed * 0.8, 0.5)
                 self.change_max_angle = True
-                print(self.lean_speed)
 
     def update_position(self):
         """Update the player's position with smooth horizontal movement."""
