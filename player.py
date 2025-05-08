@@ -1,15 +1,10 @@
 import pygame
-
-WIDTH, HEIGHT = 960, 540
-ROOF_WIDTH = 700
-ROOF_HEIGHT = HEIGHT // 3  # Height of the roof
-ROOF_X = (WIDTH - ROOF_WIDTH) // 2
-ROOF_Y = HEIGHT - ROOF_HEIGHT  # Position the roof at the bo
+import config
 
 
 class Player:
     def __init__(self, x, y):
-        self.image = pygame.image.load("player.png")
+        self.image = pygame.image.load("assets/player.png")
         self.width, self.height = self.image.get_size()
         self.x = x
         self.y = y - self.height  # Adjust to sit on the roof
@@ -49,8 +44,8 @@ class Player:
         self.y += self.vel_y
 
         # Check if player lands on the roof
-        if self.y + self.height >= ROOF_Y and ROOF_X <= self.x <= ROOF_X + ROOF_WIDTH - self.width:
-            self.y = ROOF_Y - self.height  # Place player on top of the roof
+        if self.y + self.height >= config.ROOF_Y and config.ROOF_X <= self.x <= config.ROOF_X + config.ROOF_WIDTH - self.width:
+            self.y = config.ROOF_Y - self.height  # Place player on top of the roof
             self.vel_y = 0
 
             # If the player lands from a jump, reset leaning
@@ -64,7 +59,7 @@ class Player:
             self.change_max_angle = False
 
         if self.on_ground:
-            if self.max_lean < 2:
+            if self.max_lean < 7:
                 self.lean_angle = 0
                 self.lean_speed = 0
 
@@ -76,7 +71,7 @@ class Player:
             if abs(self.lean_angle) >= self.max_lean:
                 self.lean_angle = (self.max_lean) * self.lean_direction
                 self.lean_direction *= -1  # Reverse direction
-                self.lean_speed = max(self.lean_speed * 0.8, 0.5)
+                self.lean_speed = max(self.lean_speed * 0.75, 0.5)
                 self.change_max_angle = True
 
     def update_position(self):
@@ -88,3 +83,15 @@ class Player:
         rotated_image = pygame.transform.rotate(self.image, self.lean_angle)
         image_rect = rotated_image.get_rect(center=(self.x + self.width // 2, self.y + self.height // 2))
         screen.blit(rotated_image, image_rect.topleft)
+
+    def apply_movement(self):
+        self.apply_gravity()
+        self.lean_and_move()  # Leaning movement
+        self.update_position()  # Apply smooth horizontal movement
+
+    def get_data(self):
+        return {
+            "x": self.x,
+            "y": self.y,
+            "lean_angle": self.lean_angle,
+        }
