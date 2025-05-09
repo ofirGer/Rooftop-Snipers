@@ -24,7 +24,7 @@ class GameClient:
         self.connect_to_server()
 
         self.enemy_player = player.Player(config.ROOF_X + config.ROOF_WIDTH - 70, config.ROOF_Y)
-        self.enemy_gun = gun.Gun(self.enemy_player, self.screen)
+        self.enemy_gun = gun.Gun(self.enemy_player, self.screen, mirror=True)
 
     def connect_to_server(self):
         try:
@@ -56,17 +56,18 @@ class GameClient:
             self.client_socket.send(pickle.dumps(combined_data))
 
             enemy_data = self.pro.get_data()
-            if enemy_data:
-                if "player" in enemy_data:
-                    self.enemy_player.x = enemy_data["player"]["x"]
-                    self.enemy_player.y = enemy_data["player"]["y"]
-                    self.enemy_player.lean_angle = enemy_data["player"]["lean_angle"]
+            if "player" in enemy_data:
+                original_x = enemy_data["player"]["x"]
+                self.enemy_player.x = config.WIDTH - original_x - self.enemy_player.width
+                self.enemy_player.y = enemy_data["player"]["y"]
+                self.enemy_player.lean_angle = -enemy_data["player"]["lean_angle"]
 
-                if "gun" in enemy_data:
-                    self.enemy_gun.angle = enemy_data["gun"]["angle"]
-                    self.enemy_gun.bullet_angle = enemy_data["gun"]["bullet_angle"]
-                    self.enemy_gun.firing = enemy_data["gun"]["firing"]
-                    self.enemy_gun.current_bullet_frame = enemy_data["gun"]["bullet_frame"]
+            if "gun" in enemy_data:
+                self.enemy_gun.angle = -enemy_data["gun"]["angle"]
+                self.enemy_gun.bullet_angle = -enemy_data["gun"]["bullet_angle"]
+                self.enemy_gun.firing = enemy_data["gun"]["firing"]
+                self.enemy_gun.current_bullet_frame = enemy_data["gun"]["bullet_frame"]
+
 
         except Exception as e:
             print(f"Connection error: {e}")
@@ -91,7 +92,7 @@ class GameClient:
         )
         self.local_player.draw(self.screen)
         self.local_gun.draw()
-        self.enemy_player.draw(self.screen)
+        self.enemy_player.draw(self.screen, mirror=True)
         self.enemy_gun.update_position()  # Position gun correctly
         self.enemy_gun.draw()  # Draw gun and bullet if firing
         pygame.display.flip()
