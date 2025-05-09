@@ -78,9 +78,11 @@ class Player:
         """Update the player's position with smooth horizontal movement."""
         self.x += self.vel_x
 
-    def draw(self, screen):
-        """Draw the player on the screen."""
+    def draw(self, screen, mirror=False):
+        """Draw the player on the screen. Mirror if specified."""
         rotated_image = pygame.transform.rotate(self.image, self.lean_angle)
+        if mirror:
+            rotated_image = pygame.transform.flip(rotated_image, True, False)
         image_rect = rotated_image.get_rect(center=(self.x + self.width // 2, self.y + self.height // 2))
         screen.blit(rotated_image, image_rect.topleft)
 
