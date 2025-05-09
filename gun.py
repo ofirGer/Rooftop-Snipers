@@ -110,5 +110,6 @@ class Gun:
         return {
             'angle': self.angle,
             'firing': self.firing,
-            'bullet_frame': self.current_bullet_frame
+            'bullet_frame': self.current_bullet_frame,
+            'bullet_angle': self.bullet_angle
         }
