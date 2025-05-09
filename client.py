@@ -63,7 +63,7 @@ class GameClient:
                 self.enemy_player.lean_angle = -enemy_data["player"]["lean_angle"]
 
             if "gun" in enemy_data:
-                self.enemy_gun.angle = -enemy_data["gun"]["angle"]
+                self.enemy_gun.angle = enemy_data["gun"]["angle"]
                 self.enemy_gun.bullet_angle = -enemy_data["gun"]["bullet_angle"]
                 self.enemy_gun.firing = enemy_data["gun"]["firing"]
                 self.enemy_gun.current_bullet_frame = enemy_data["gun"]["bullet_frame"]
