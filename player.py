@@ -79,8 +79,9 @@ class Player:
         self.x += self.vel_x
 
     def draw(self, screen, mirror=False):
-        """Draw the player on the screen. Mirror if specified."""
-        rotated_image = pygame.transform.rotate(self.image, self.lean_angle)
+        """Draw the player on the screen. Mirror and flip angle if specified."""
+        angle_to_draw = -self.lean_angle if mirror else self.lean_angle
+        rotated_image = pygame.transform.rotate(self.image, angle_to_draw)
         if mirror:
             rotated_image = pygame.transform.flip(rotated_image, True, False)
         image_rect = rotated_image.get_rect(center=(self.x + self.width // 2, self.y + self.height // 2))
