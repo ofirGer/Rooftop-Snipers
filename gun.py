@@ -2,9 +2,9 @@ import pygame
 
 
 class Gun:
-    def __init__(self, player1, screen):
+    def __init__(self, player1, screen, mirror= False):
         self.image = pygame.image.load("assets/arm.png").convert_alpha()
-
+        self.mirror = mirror
         self.bullet_frames = [pygame.image.load(f"assets/bullets/bullet{i}.png").convert_alpha() for i in range(1, 7)]
         self.bullet_angle = 0
 
@@ -97,6 +97,9 @@ class Gun:
         offset = pygame.math.Vector2(5, 15)
 
         rotated_image = pygame.transform.rotozoom(self.image, self.angle, 1)
+        if self.mirror:
+            rotated_image = pygame.transform.flip(rotated_image, True, False)
+
         rotated_offset = offset.rotate(-self.angle)
         rect = rotated_image.get_rect(center=pivot + rotated_offset)
         self.screen.blit(rotated_image, rect)
